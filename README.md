@@ -21,7 +21,7 @@ The goal is to understand **how observability actually works through experiments
 
 The system will evolve gradually:
 
-Simple application → Metrics → Prometheus → PromQL → Grafana → Structured Logging → Loki → Distributed Tracing → OpenTelemetry → Tempo → Kubernetes Observability → Alerting → SLOs → Profiling → Incident Response → Production Architecture
+Simple application → Metrics → Prometheus → PromQL → Grafana → Structured Logging → Loki → Distributed Tracing → OpenTelemetry → Tempo → Kubernetes Observability → Alerting → SLOs → Profiling → Production Architecture → Incident Response
 
 Complexity is introduced only when it teaches something useful.
 
@@ -44,7 +44,7 @@ You will also learn the first mental model for using telemetry during troublesho
 
 ## Current progress
 
-- [x] Lab 00 — Observability Fundamentals
+- [ ] Lab 00 — Final repository preparation
 - [ ] Lab 01 — Coming next
 
 ## Technology
@@ -71,7 +71,7 @@ Not all tools are required at the beginning.
 For Lab 00 you only need:
 
 - Git
-- Python 3
+- Python 3.10 or newer
 - curl
 - a terminal
 

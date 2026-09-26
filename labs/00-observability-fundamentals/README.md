@@ -219,7 +219,7 @@ The application contains several intentionally simple endpoints:
 
 You need:
 
-- Python 3
+- Python 3.10 or newer
 - terminal access
 - `curl`
 - Git
@@ -987,4 +987,37 @@ Remember to update the `curl` commands accordingly.
 Use:
 
 ```bash
-http://localhost:8000/metrics/
+curl -i http://localhost:8000/metrics/
+```
+
+The response should begin with `HTTP/1.1 200 OK` and include Prometheus-format metrics.
+
+---
+
+# Cleanup
+
+In the terminal running Uvicorn, press `Ctrl+C` to stop the application. Wait for shutdown to finish and the shell prompt to return.
+
+Then deactivate the Python virtual environment in that terminal:
+
+```bash
+deactivate
+```
+
+If you activated the virtual environment in any other terminal, run `deactivate` there too.
+
+---
+
+# Next steps
+
+Before moving on, make sure you can:
+
+- reproduce healthy, slow, and failed requests
+- explain how the request counter and histogram change when you generate traffic
+- find a request log and console span with matching trace and span identifiers
+- explain why `/metrics/` includes a trailing slash
+- stop the application and deactivate the virtual environment
+
+Lab 00 is currently in final repository preparation. The second commit, GitHub publication, and validation from a fresh clone are still pending; see [Project Progress](../../docs/PROGRESS.md) for the remaining work.
+
+After Lab 00 publication validation is complete, continue to **Metrics Foundations** in the [roadmap](../../ROADMAP.md). The next lab has not been published yet; return to the [project README](../../README.md) for its entry point when available.

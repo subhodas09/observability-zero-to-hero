@@ -3,7 +3,8 @@
 These patches remove mechanical code editing without hiding the instrumentation. Each
 file is a normal, readable Git patch against `application/main.py`.
 
-Use them in number order from the `lab-01-start` checkpoint:
+Use them in number order from the corrected `lab-01-start-v2` checkpoint. The original
+`lab-01-start` tag remains the immutable historical v1 checkpoint:
 
 ```bash
 python scripts/lab_step.py list

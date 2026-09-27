@@ -80,6 +80,21 @@ Only later introduce convenience commands such as:
 
 ---
 
+## Course-authoring workflow
+
+**Automate the mechanics, never automate the learning.**
+
+Apply this principle to every future lab:
+
+- ChatGPT remains the instructor and coach: introduce concepts, guide reasoning, ask for predictions, help interpret results, and check understanding.
+- Work/Codex handles locating files, mechanical or repetitive code and configuration edits, large YAML changes, validation, and repository maintenance.
+- Learners remain hands-on for predictions, observability commands, telemetry inspection, PromQL, LogQL, Kubernetes troubleshooting, incident investigation, verification, and knowledge checks.
+- Require manual editing only when the edit is small and performing it teaches the concept.
+- Helpers, patches, and scripts may apply mechanical changes, but they must show learners what changes, explain why it changes, and preserve the PREDICT → APPLY → OBSERVE → EXPLAIN loop.
+- Do not hide concept-defining instrumentation behind opaque automation. Surface and explain the instrumentation that teaches the concept before it is applied.
+
+---
+
 ## Public documentation requirement
 
 Every public lab must be usable by someone who has never seen the development conversation.

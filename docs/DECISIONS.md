@@ -119,3 +119,27 @@ Project architecture, progress, decisions, curriculum, and teaching conventions 
 Long-running ChatGPT and Codex sessions should not depend on historical chat context.
 
 Repository governance files take precedence over stale chat context.
+
+---
+
+## ADR-008 — Automate the mechanics, never automate the learning
+
+### Decision
+
+Use **Automate the mechanics, never automate the learning** as a durable course-authoring policy for every future lab.
+
+ChatGPT remains the instructor and coach. Work/Codex handles locating files, mechanical or repetitive code and configuration edits, large YAML changes, validation, and repository maintenance.
+
+Learners remain hands-on for predictions, observability commands, telemetry inspection, PromQL, LogQL, Kubernetes troubleshooting, incident investigation, verification, and knowledge checks.
+
+### Operational policy
+
+- Require manual editing only when the edit is small and performing it teaches the concept.
+- Helpers, patches, and scripts may apply mechanical changes only when they show learners what changes, explain why it changes, and preserve the PREDICT → APPLY → OBSERVE → EXPLAIN loop.
+- Do not hide concept-defining instrumentation behind opaque automation. Surface and explain the instrumentation that teaches the concept before it is applied.
+
+### Why
+
+Mechanical work should not distract from observability reasoning, and convenience should not remove the work that develops observability judgment.
+
+Future lab UX should optimize for beginner discoverability without reducing conceptual effort.

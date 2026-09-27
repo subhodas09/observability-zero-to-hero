@@ -44,8 +44,8 @@ You will also learn the first mental model for using telemetry during troublesho
 
 ## Current progress
 
-- [ ] Lab 00 — Published; fresh-clone validation pending
-- [ ] Lab 01 — Coming next
+- [x] Lab 00 — Observability Fundamentals
+- [ ] Lab 01 — Metrics Foundations
 
 ## Technology
 

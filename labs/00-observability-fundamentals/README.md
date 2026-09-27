@@ -1018,6 +1018,6 @@ Before moving on, make sure you can:
 - explain why `/metrics/` includes a trailing slash
 - stop the application and deactivate the virtual environment
 
-Lab 00 has been published to GitHub. Validation from a fresh clone remains pending; see [Project Progress](../../docs/PROGRESS.md) for the remaining work.
+Lab 00 has been published to GitHub and successfully validated from a fresh clone, including dependency installation and the `/health`, `/slow`, `/error`, and `/metrics/` checks. See [Project Progress](../../docs/PROGRESS.md) for the recorded result.
 
-After Lab 00 publication validation is complete, continue to **Metrics Foundations** in the [roadmap](../../ROADMAP.md). The next lab has not been published yet; return to the [project README](../../README.md) for its entry point when available.
+Lab 00 is complete. Continue next to **Metrics Foundations** in the [roadmap](../../ROADMAP.md). The next lab has not been published yet; return to the [project README](../../README.md) for its entry point when available.

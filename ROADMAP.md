@@ -14,9 +14,9 @@ The exact lab numbering may evolve, but prerequisite order and progressive compl
 - Correlation fundamentals
 - First observable local application
 
-Status: 🟡 In progress
+Status: ✅ Complete
 
-Current lab:
+Completed lab:
 
 - Lab 00 — Observability Fundamentals
 
@@ -31,6 +31,12 @@ Current lab:
 - Dimensions
 - Cardinality
 - Metric design
+
+Status: 🟡 In progress
+
+Next lab:
+
+- Lab 01 — Metrics Foundations
 
 ## Phase 2 — Prometheus
 

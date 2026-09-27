@@ -6,13 +6,13 @@ Future ChatGPT and Codex sessions should read this file before substantial work.
 
 ## Current phase
 
-Phase 0 — Environment & Observability Mental Model
+Phase 1 — Metrics Foundations
 
 ## Current lab
 
 Lab 00 — Observability Fundamentals
 
-Status: Published; fresh-clone validation pending
+Status: ✅ Complete
 
 ## Completed
 
@@ -41,6 +41,13 @@ Status: Published; fresh-clone validation pending
 - Created the public [GitHub repository](https://github.com/subhodas09/observability-zero-to-hero)
 - Configured `origin`, pushed both initial commits on `main`, and verified public visibility and the remote commit
 - Set the repository description and all 14 requested topics
+- Verified the public repository from a completely fresh clone
+- Verified dependency installation from `requirements.txt`
+- Verified `/health`
+- Verified `/slow`
+- Verified `/error`
+- Verified `/metrics/`
+- Verified repository navigation and required project files
 
 ## Current architecture
 
@@ -83,13 +90,19 @@ Prometheus server, Grafana, Loki, Tempo, Kubernetes, and OpenTelemetry Collector
 
 ## Unresolved work
 
-- Validate setup and Lab 00 from a fresh clone of the published repository.
-- Add a license before the first public release, as noted in the root README.
-
-GitHub publication is complete. Lab 00 remains incomplete until validation from a fresh clone succeeds.
+No unresolved Lab 00 blockers.
 
 ## Next
 
-1. From a fresh clone of the published repository, verify installation, application startup, endpoints, telemetry, and cleanup.
-2. Record the validation result here and mark Lab 00 complete only after publication validation succeeds.
-3. Continue to Metrics Foundations in `ROADMAP.md` once Lab 00 is complete.
+Lab 01 — Metrics Foundations
+
+Focus:
+
+- time series
+- counters
+- gauges
+- labels
+- dimensions
+- first principles of metric design
+
+Do not introduce the Prometheus server yet unless the lab explicitly reaches that prerequisite.

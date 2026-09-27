@@ -1,8 +1,8 @@
 import json
 import time
 
-from fastapi import FastAPI, HTTPException, Request
-from prometheus_client import Counter, Histogram, make_asgi_app
+from fastapi import FastAPI, HTTPException, Query, Request
+from prometheus_client import Counter, Gauge, Histogram, make_asgi_app
 
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
@@ -60,6 +60,19 @@ REQUEST_DURATION = Histogram(
     ["endpoint"],
 )
 
+USER_REQUESTS = Counter(
+    "lab01_user_requests_total",
+    "Requests to the cardinality demonstration endpoint",
+    ["endpoint"],
+)
+
+ACTIVE_JOBS = Gauge(
+    "lab01_active_jobs",
+    "Current number of active jobs in the gauge demonstration",
+)
+
+active_jobs = 0
+
 
 # ---------------------------------------------------------
 # Observability middleware
@@ -80,6 +93,8 @@ async def observe_request(request: Request, call_next):
         duration = time.perf_counter() - start_time
 
         status = response.status_code
+        route = request.scope.get("route")
+        metric_endpoint = getattr(route, "path", None) or "__unmatched__"
 
         span.set_attribute("http.response.status_code", status)
         span.set_attribute("request.duration_seconds", duration)
@@ -94,12 +109,12 @@ async def observe_request(request: Request, call_next):
 
         REQUEST_COUNT.labels(
             method=request.method,
-            endpoint=request.url.path,
+            endpoint=metric_endpoint,
             status=str(status),
         ).inc()
 
         REQUEST_DURATION.labels(
-            endpoint=request.url.path
+            endpoint=metric_endpoint
         ).observe(duration)
 
         context = span.get_span_context()
@@ -134,12 +149,61 @@ def slow():
     return {"message": "That was intentionally slow"}
 
 
+@app.get("/delay")
+def delay(ms: int = Query(..., ge=0, le=5000)):
+    time.sleep(ms / 1000)
+    return {"requested_delay_ms": ms}
+
+
 @app.get("/error")
 def error():
     raise HTTPException(
         status_code=500,
         detail="Intentional LAB 00 failure",
     )
+
+
+@app.get("/variable-status")
+def variable_status(fail: bool = False):
+    if fail:
+        raise HTTPException(
+            status_code=500,
+            detail="Intentional variable failure",
+        )
+
+    return {"status": "success"}
+
+
+@app.get("/cardinality/{user_id}")
+def cardinality_demo(user_id: str):
+    USER_REQUESTS.labels(
+        endpoint="/cardinality/{user_id}",
+    ).inc()
+
+    return {
+        "user_id": user_id,
+        "message": "Request recorded",
+    }
+
+
+@app.get("/gauge/jobs/start")
+def start_demo_job():
+    global active_jobs
+
+    active_jobs += 1
+    ACTIVE_JOBS.set(active_jobs)
+    return {"message": "Demo job started"}
+
+
+@app.get("/gauge/jobs/finish")
+def finish_demo_job():
+    global active_jobs
+
+    if active_jobs > 0:
+        active_jobs -= 1
+
+    ACTIVE_JOBS.set(active_jobs)
+    return {"message": "Demo job finished"}
 
 
 # Prometheus-compatible metrics endpoint

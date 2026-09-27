@@ -12,8 +12,8 @@ Phase 1 — Metrics Foundations
 
 Lab 01 — Metrics Foundations
 
-Status: 🟡 In progress — learner workflow prepared; the application implementation,
-publication, and immutable checkpoint tags are pending
+Status: 🟡 In progress — the Lab 01 implementation is complete and validated
+locally; publication, immutable checkpoint tags, and the final fresh-clone check are pending
 
 ## Completed
 
@@ -57,6 +57,12 @@ publication, and immutable checkpoint tags are pending
   0.45 seconds
 - Prepared the public Lab 01 learner guide with exact commands, troubleshooting, cleanup,
   metric-selection guidance, bounded-label rules, and the Lab 02 refactor plan
+- Completed the six Lab 01 application steps: status-labelled Counter series, the
+  cardinality failure and normalized-route fix, the negative-Gauge failure and guard,
+  and bounded controlled latency
+- Validated Lab 01 syntax, percentile tests and examples, step ordering and safety,
+  application endpoints, metric series, histogram accumulation, and raw-metrics
+  percentile parsing
 
 ## Current architecture
 
@@ -81,7 +87,12 @@ Prometheus server, Grafana, Loki, Tempo, Kubernetes, and OpenTelemetry Collector
 |---|---|
 | `/health` | Returns HTTP 200 with a healthy status |
 | `/slow` | Waits approximately two seconds, then returns HTTP 200 |
+| `/delay?ms=...` | Waits for a validated delay from 0 through 5000 ms; invalid values return HTTP 422 |
 | `/error` | Returns an intentional HTTP 500 failure |
+| `/variable-status` | Returns HTTP 200 by default or an intentional HTTP 500 with `fail=true` |
+| `/cardinality/{user_id}` | Demonstrates a dynamic route while metrics use the bounded route template |
+| `/gauge/jobs/start` | Increments the active-jobs Gauge |
+| `/gauge/jobs/finish` | Decrements the Gauge without allowing it to become negative |
 | `/metrics/` | Exposes Prometheus-format metrics; the trailing slash avoids a redirect |
 
 ## Current important files
@@ -104,22 +115,17 @@ Prometheus server, Grafana, Loki, Tempo, Kubernetes, and OpenTelemetry Collector
 
 ## Unresolved work
 
-- Review and publish the prepared `lab-01-start` course state, then create its
-  immutable annotated tag.
-- Create the later Lab 01 completion commit with the six-step result in
-  `application/main.py`. In that same commit, change `README.md` and this file from
-  their prepared-start wording to implementation-and-validation-complete
-  wording.
-- After the corresponding commits are reviewed and published, ensure the immutable
+- Review and publish the separate Lab 01 start and completion commits.
+- After those commits are reviewed and published, ensure the immutable
   annotated tags point to these exact states: `lab-00-complete` at `ca0f15a`,
-  `lab-01-start` at the course-assets commit, and `lab-01-complete` at the later
-  application-completion commit. Do not create or move tags during draft authoring.
+  `lab-01-start` at `296c071`, and `lab-01-complete` at the application-completion
+  commit. Do not create or move tags during draft authoring.
 - Perform a final fresh-clone public-repository check after the commit and tags exist.
 
 ## Next
 
-Complete, review, and publish the Lab 01 implementation. Do not mark it complete until
-the reviewed completion commit, immutable checkpoints, and final fresh-clone check exist.
+Review and publish the separate Lab 01 checkpoint commits, create their immutable tags,
+and perform the final fresh-clone check before marking the lab fully published.
 
 For Lab 02, split the growing application into `application/instrumentation/` and
 `application/experiments/` before adding more experiments. Then begin Prometheus server

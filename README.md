@@ -42,17 +42,18 @@ You will also learn the first mental model for using telemetry during troublesho
 
 ➡️ [Start Lab 00](labs/00-observability-fundamentals/README.md)
 
-### 🟡 Lab 01 — Metrics Foundations
+### 🟢 Lab 01 — Metrics Foundations
 
 Learn how Counters, Gauges, Histograms, labels, cardinality, averages, and percentile
 interpolation work through controlled application experiments.
 
-➡️ [Continue to Lab 01](labs/01-metrics-foundations/README.md)
+➡️ [Start Lab 01](labs/01-metrics-foundations/README.md)
 
 ## Current progress
 
 - [x] Lab 00 — Observability Fundamentals
-- [ ] Lab 01 — Metrics Foundations (learner workflow prepared; implementation checkpoint pending)
+- [x] Lab 01 — Metrics Foundations (implementation complete and validated locally;
+  checkpoint publication pending)
 
 ## Technology
 

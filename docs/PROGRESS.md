@@ -12,7 +12,7 @@ Phase 2 — Prometheus
 
 Lab 02 — Prometheus Fundamentals
 
-Status: 🟡 Next — Lab 01 is complete and publicly reproducible
+Status: 🟡 Next — Lab 01 is complete, corrected, and publicly reproducible
 
 ## Completed
 
@@ -69,6 +69,17 @@ Status: 🟡 Next — Lab 01 is complete and publicly reproducible
   the `lab-01-complete` checkpoint
 - Validated the percentile helper and final application from clean public checkouts
 - Confirmed Lab 01 is publicly reproducible
+- Completed the strict 34-item Lab 01 audit with 34/34 items fully covered
+- Published the additive immutable `lab-01-start-v2` checkpoint with the same Lab 00
+  application baseline and corrected learner documentation; preserved the original
+  `lab-01-start` as historical v1
+- Validated `lab-01-start-v2` from a fresh public clone with a new virtual environment,
+  all six sequential learner steps, helper tests and examples, and live application
+  checks
+- Confirmed the six steps from `lab-01-start-v2` still reconstruct the published
+  `lab-01-complete` application byte-for-byte
+- Confirmed the documented deliberate restart clears prior `/delay` samples and the
+  controlled ten-request distribution produces exactly ten histogram observations
 
 ## Current architecture
 

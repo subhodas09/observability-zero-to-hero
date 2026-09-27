@@ -55,9 +55,9 @@ interpolation work through controlled application experiments.
 - [x] Lab 01 — Metrics Foundations (published and validated from a fresh clone)
 - [ ] Lab 02 — Prometheus Fundamentals (next)
 
-Lab 01's learner step workflow, immutable checkpoint tags, percentile helper, and final
-application were validated from the public repository. Public reproducibility is
-confirmed.
+Lab 01's corrected learner workflow covers all 34 audited learning and usability
+criteria. The v2 start checkpoint, six-step workflow, percentile helper, and final
+application were validated from a fresh clone.
 
 ## Technology
 
@@ -91,7 +91,7 @@ Later labs introduce additional dependencies only when needed.
 
 ## Course checkpoints
 
-Each lab uses two immutable annotated tags with different purposes:
+Each lab normally uses two immutable annotated tags with different purposes:
 
 - `lab-N-start` is the prepared environment for learning Lab N. It contains the
   previous lab's application baseline plus the instructions, patches, helpers, and
@@ -101,6 +101,21 @@ Each lab uses two immutable annotated tags with different purposes:
 Learners normally create their working branch from `lab-N-start`. Use
 `lab-N-complete` to inspect the finished state, compare work, recover, or jump ahead.
 The two tags must identify distinct course states when the lab changes the application.
+
+Published tags are never moved. If published course material needs a correction, a
+new versioned tag is added while the original remains available.
+
+For Lab 01, new learners should use the corrected start checkpoint:
+
+```bash
+git clone https://github.com/subhodas09/observability-zero-to-hero.git
+cd observability-zero-to-hero
+git switch -c learner/lab-01 lab-01-start-v2
+```
+
+`lab-01-start` is the historical published v1 checkpoint. `lab-01-start-v2` keeps the
+same Lab 00 application baseline and adds the corrected learner documentation.
+`lab-01-complete` remains the final Lab 01 application reference.
 
 ## Supported environment
 

@@ -32,9 +32,9 @@ Completed lab:
 - Cardinality
 - Metric design
 
-Status: 🟡 In progress
+Status: ✅ Complete
 
-Next lab:
+Completed lab:
 
 - Lab 01 — Metrics Foundations
 
@@ -48,6 +48,12 @@ Next lab:
 - TSDB fundamentals
 - Retention
 - Reliability
+
+Status: 🟡 In progress
+
+Next lab:
+
+- Lab 02 — Prometheus Fundamentals
 
 ## Phase 3 — PromQL
 

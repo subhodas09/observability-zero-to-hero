@@ -6,14 +6,13 @@ Future ChatGPT and Codex sessions should read this file before substantial work.
 
 ## Current phase
 
-Phase 1 — Metrics Foundations
+Phase 2 — Prometheus
 
 ## Current lab
 
-Lab 01 — Metrics Foundations
+Lab 02 — Prometheus Fundamentals
 
-Status: 🟡 In progress — the Lab 01 implementation is complete and validated
-locally; publication, immutable checkpoint tags, and the final fresh-clone check are pending
+Status: 🟡 Next — Lab 01 is complete and publicly reproducible
 
 ## Completed
 
@@ -63,6 +62,13 @@ locally; publication, immutable checkpoint tags, and the final fresh-clone check
 - Validated Lab 01 syntax, percentile tests and examples, step ordering and safety,
   application endpoints, metric series, histogram accumulation, and raw-metrics
   percentile parsing
+- Published and verified the immutable `lab-00-complete`, `lab-01-start`, and
+  `lab-01-complete` annotated checkpoint tags
+- Validated the complete Lab 01 learner step workflow from a fresh public clone
+- Confirmed the learner-built `application/main.py` is byte-for-byte identical to
+  the `lab-01-complete` checkpoint
+- Validated the percentile helper and final application from clean public checkouts
+- Confirmed Lab 01 is publicly reproducible
 
 ## Current architecture
 
@@ -115,18 +121,11 @@ Prometheus server, Grafana, Loki, Tempo, Kubernetes, and OpenTelemetry Collector
 
 ## Unresolved work
 
-- Review and publish the separate Lab 01 start and completion commits.
-- After those commits are reviewed and published, ensure the immutable
-  annotated tags point to these exact states: `lab-00-complete` at `ca0f15a`,
-  `lab-01-start` at `296c071`, and `lab-01-complete` at the application-completion
-  commit. Do not create or move tags during draft authoring.
-- Perform a final fresh-clone public-repository check after the commit and tags exist.
+- None for Lab 01.
 
 ## Next
 
-Review and publish the separate Lab 01 checkpoint commits, create their immutable tags,
-and perform the final fresh-clone check before marking the lab fully published.
-
-For Lab 02, split the growing application into `application/instrumentation/` and
+Begin Lab 02 — Prometheus Fundamentals. Split the growing application into
+`application/instrumentation/` and
 `application/experiments/` before adding more experiments. Then begin Prometheus server
 fundamentals. Do not introduce Grafana, Kubernetes, or unrelated stack components yet.

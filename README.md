@@ -52,8 +52,12 @@ interpolation work through controlled application experiments.
 ## Current progress
 
 - [x] Lab 00 — Observability Fundamentals
-- [x] Lab 01 — Metrics Foundations (implementation complete and validated locally;
-  checkpoint publication pending)
+- [x] Lab 01 — Metrics Foundations (published and validated from a fresh clone)
+- [ ] Lab 02 — Prometheus Fundamentals (next)
+
+Lab 01's learner step workflow, immutable checkpoint tags, percentile helper, and final
+application were validated from the public repository. Public reproducibility is
+confirmed.
 
 ## Technology
 

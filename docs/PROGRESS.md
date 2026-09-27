@@ -12,7 +12,7 @@ Phase 0 — Environment & Observability Mental Model
 
 Lab 00 — Observability Fundamentals
 
-Status: Final repository preparation
+Status: Published; fresh-clone validation pending
 
 ## Completed
 
@@ -37,7 +37,10 @@ Status: Final repository preparation
 - Created root README
 - Curated direct Python dependencies
 - Verified application from a clean temporary virtual environment
-- Created and staged governance files: `AGENTS.md`, `ROADMAP.md`, `docs/PROGRESS.md`, and `docs/DECISIONS.md`
+- Committed governance files and documentation corrections in `d40c287`: `AGENTS.md`, `ROADMAP.md`, `docs/PROGRESS.md`, `docs/DECISIONS.md`, and both READMEs
+- Created the public [GitHub repository](https://github.com/subhodas09/observability-zero-to-hero)
+- Configured `origin`, pushed both initial commits on `main`, and verified public visibility and the remote commit
+- Set the repository description and all 14 requested topics
 
 ## Current architecture
 
@@ -80,18 +83,13 @@ Prometheus server, Grafana, Loki, Tempo, Kubernetes, and OpenTelemetry Collector
 
 ## Unresolved work
 
-- Review and stage the documentation corrections; the previously staged governance files do not yet include these corrections.
-- Create the second commit for project governance, the roadmap, and documentation corrections.
-- Create the GitHub repository and publish the local commits.
 - Validate setup and Lab 00 from a fresh clone of the published repository.
 - Add a license before the first public release, as noted in the root README.
 
-The second commit, GitHub publication, and fresh-clone validation remain pending. Lab 00 remains in final repository preparation until publication validation is complete.
+GitHub publication is complete. Lab 00 remains incomplete until validation from a fresh clone succeeds.
 
 ## Next
 
-1. Review the repaired documentation and run `git diff --check` and `git status`.
-2. Stage the reviewed corrections and create the second commit when ready.
-3. Publish to GitHub, then verify installation, application startup, endpoints, telemetry, and cleanup from a fresh clone.
-4. Record the validation result here and mark Lab 00 complete only after publication validation succeeds.
-5. Continue to Metrics Foundations in `ROADMAP.md` once Lab 00 is complete.
+1. From a fresh clone of the published repository, verify installation, application startup, endpoints, telemetry, and cleanup.
+2. Record the validation result here and mark Lab 00 complete only after publication validation succeeds.
+3. Continue to Metrics Foundations in `ROADMAP.md` once Lab 00 is complete.

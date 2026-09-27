@@ -44,7 +44,7 @@ You will also learn the first mental model for using telemetry during troublesho
 
 ## Current progress
 
-- [ ] Lab 00 — Final repository preparation
+- [ ] Lab 00 — Published; fresh-clone validation pending
 - [ ] Lab 01 — Coming next
 
 ## Technology

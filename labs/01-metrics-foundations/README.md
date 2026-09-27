@@ -13,10 +13,10 @@ By the end of this lab, you will be able to:
 - normalize dynamic paths to stable route templates
 - observe a Counter reset after a process restart
 - explain Gauge up/down behavior and protect a Gauge from invalid application state
-- read histogram `_bucket`, `_count`, and `_sum` samples
+- read histogram `_bucket`, `_count`, `_sum`, and `_created` samples
 - subtract cumulative buckets to find observations inside one bucket
-- calculate an average from histogram sum and count
-- estimate p50, p95, and p99 with classic-histogram linear interpolation
+- calculate simple and grouped weighted averages
+- estimate p50, p80, p90, p95, and p99 with classic-histogram linear interpolation
 - explain why tail latency can be unhealthy while average latency looks acceptable
 - choose bounded labels for application metrics
 
@@ -41,22 +41,24 @@ reviewed course state, while each lab has two checkpoints:
   application baseline plus the new lab's instructions, patches, helpers, and tests.
 - `lab-N-complete` is the reviewed reference implementation after finishing Lab N.
 
-Learners normally branch from the start checkpoint. For Lab 01, run:
+Learners normally branch from the start checkpoint. For Lab 01, new learners should
+use the corrected v2 start checkpoint:
 
 ```bash
 git clone https://github.com/subhodas09/observability-zero-to-hero.git
 cd observability-zero-to-hero
-git switch -c learner/lab-01 lab-01-start
+git switch -c learner/lab-01 lab-01-start-v2
 ```
 
 The new branch keeps your experiments separate. It starts with the completed Lab 00
 application and also includes this README, the step patches, `scripts/lab_step.py`,
 the percentile helper, and its tests.
 
-Keep both checkpoint types for every future lab:
+Keep both checkpoint types for every future lab. A version suffix is used only when
+an already-published checkpoint needs an additive correction:
 
 ```text
-lab-01-start
+lab-01-start-v2
 lab-01-complete
 lab-02-start
 lab-02-complete
@@ -67,11 +69,11 @@ lab-02-complete
 `ca0f15a77c78e17c8eee7e111462c05a19a0f3ae`. It is not the normal Lab 01 starting
 point because that commit does not contain the Lab 01 course assets.
 
-`lab-01-start` must point to a later, separate commit where all Lab 01 course assets
-exist while `application/main.py` is still identical to the Lab 00 application
-baseline. `lab-01-complete` must point to the later reviewed commit where the six
-steps have been applied to the application. The two tags cannot point to the same
-Lab 01 completion commit.
+`lab-01-start-v2` contains the corrected learner guide while `application/main.py`
+remains identical to the Lab 00 application baseline. The original `lab-01-start`
+tag remains published as the historical v1 checkpoint and is never moved.
+`lab-01-complete` remains the reviewed final application where all six steps have
+been applied.
 
 Tags are course releases. Do not move or reuse an existing checkpoint tag. This lab
 documents the strategy; tags are created only when the corresponding course state is
@@ -108,6 +110,25 @@ curl -s http://localhost:8000/metrics/ | grep 'lab00_'
 ```
 
 The trailing slash in `/metrics/` is required.
+
+## How to restart the app during this lab
+
+Use terminal 1, where Uvicorn is running. Press `Ctrl+C` and wait until the shell
+prompt returns. From the repository root, activate the virtual environment if the
+prompt does not already show `(.venv)`, then start the app again:
+
+```bash
+source .venv/bin/activate
+uvicorn application.main:app --reload --port 8000
+```
+
+Keep Uvicorn running in terminal 1. Run learner commands, requests, and metric
+inspection in terminal 2.
+
+The `--reload` option usually reloads saved Python edits automatically. A reload or a
+restart creates a new process and therefore clears process-local metric state. When an
+exercise needs an exact starting value, this guide explicitly asks for a deliberate
+`Ctrl+C` stop and start so Counters, Gauges, and Histograms begin cleanly.
 
 ## How code changes work in this lab
 
@@ -230,8 +251,9 @@ curl -s http://localhost:8000/metrics/ \
 ```
 
 Predict what the value will be immediately after the application process restarts.
-Stop Uvicorn with `Ctrl+C`, start it again, make one `/health` request, and inspect the
-same series.
+Follow [How to restart the app during this lab](#how-to-restart-the-app-during-this-lab),
+make one `/health` request, and inspect the same series. This deliberate restart clears
+the Counter's in-memory value so the reset is observable.
 
 The Counter starts again from process-local state. A reset does not mean requests were
 undone. Later, Prometheus functions such as `rate()` and `increase()` will account for
@@ -243,6 +265,9 @@ these resets.
 
 Cardinality is the number of distinct time series. Every unique label-value combination
 creates another series.
+
+> **Core rule:** request volume changes metric values; label diversity changes
+> cardinality.
 
 Bounded values have a known, small set:
 
@@ -299,6 +324,29 @@ You should see user IDs in one label and raw paths such as `/cardinality/alice` 
 other. Imagine one million users: the application would create at least one series per
 user or raw path. That makes storage, queries, and memory more expensive.
 
+Now prove the core rule with a controlled 100-user experiment. First follow
+[How to restart the app during this lab](#how-to-restart-the-app-during-this-lab) to
+remove the three earlier user series. Then run:
+
+```bash
+for i in $(seq 1 100); do
+  curl -s "http://localhost:8000/cardinality/user-$i" > /dev/null
+done
+
+curl -s http://localhost:8000/metrics/ \
+  | grep '^lab01_user_requests_total{' \
+  | wc -l
+```
+
+Expected series count: `100`. Sending more requests for the same 100 users increases
+the existing Counter values but keeps the series count at 100. A request from
+`user-101` adds a label value and therefore a new series. Explain how this demonstrates:
+
+```text
+request volume changes metric values
+label diversity changes cardinality
+```
+
 ## Step 03 — Normalize the labels
 
 The route already has a stable template:
@@ -318,7 +366,8 @@ python scripts/lab_step.py show 03
 python scripts/lab_step.py apply 03
 ```
 
-Restart Uvicorn so the metric definitions and in-memory series are recreated cleanly.
+Follow [How to restart the app during this lab](#how-to-restart-the-app-during-this-lab)
+so the old metric definitions and high-cardinality in-memory series are removed.
 Generate the same requests:
 
 ```bash
@@ -386,7 +435,8 @@ python scripts/lab_step.py show 04
 python scripts/lab_step.py apply 04
 ```
 
-Restart Uvicorn, then run:
+Follow [How to restart the app during this lab](#how-to-restart-the-app-during-this-lab)
+so the Gauge starts from zero, then run:
 
 ```bash
 curl -s http://localhost:8000/gauge/jobs/finish
@@ -417,7 +467,8 @@ python scripts/lab_step.py show 05
 python scripts/lab_step.py apply 05
 ```
 
-Restart Uvicorn and call finish twice:
+Follow [How to restart the app during this lab](#how-to-restart-the-app-during-this-lab)
+so the Gauge and guarded application state both start from zero. Then call finish twice:
 
 ```bash
 curl -s http://localhost:8000/gauge/jobs/finish
@@ -456,18 +507,28 @@ REQUEST_DURATION = Histogram(
 )
 ```
 
-It exposes three related sample families:
+It exposes four related sample families:
 
 ```text
 ..._bucket{le="..."}  cumulative observations at or below a boundary
 ..._count             total observations
 ..._sum               total duration of all observations
+..._created           Unix timestamp when this labelled histogram series was created
 ```
+
+The Python client exposes `_created` as seconds since the Unix epoch. It is useful when
+you need to understand when a process-local series appeared, but it is usually not
+central to latency analysis. Bucket counts, `_count`, and `_sum` describe the latency
+distribution itself.
 
 ## Step 06 — Add controlled latency
 
 The `/delay` endpoint accepts a bounded delay from 0 through 5000 milliseconds. It
 makes bucket experiments repeatable.
+
+The `ms` query parameter controls application behavior, but it is intentionally not a
+metric label. Arbitrary delay values would keep creating label values and increase
+cardinality. The bounded route label stays `endpoint="/delay"` for every allowed delay.
 
 Predict which default histogram buckets a 300 ms request will increment. Then:
 
@@ -476,7 +537,7 @@ python scripts/lab_step.py show 06
 python scripts/lab_step.py apply 06
 ```
 
-Restart Uvicorn. Verify the endpoint:
+Uvicorn may reload the applied code automatically. Verify the endpoint from terminal 2:
 
 ```bash
 curl -s 'http://localhost:8000/delay?ms=300'
@@ -496,6 +557,13 @@ curl -i 'http://localhost:8000/delay?ms=6000'
 
 Expected status: `422 Unprocessable Entity`.
 
+Those two verification requests were observed by the `/delay` histogram. Before the
+controlled distribution, follow
+[How to restart the app during this lab](#how-to-restart-the-app-during-this-lab).
+This deliberate reset removes the verification traffic so the next ten requests are
+the histogram's only `/delay` observations. Do not call `/delay` again before running
+the loop.
+
 Generate a controlled distribution:
 
 ```bash
@@ -510,6 +578,14 @@ Inspect only `/delay` buckets:
 curl -s http://localhost:8000/metrics/ \
   | grep 'lab00_http_request_duration_seconds_.*endpoint="/delay"'
 ```
+
+The output should include:
+
+```text
+lab00_http_request_duration_seconds_count{endpoint="/delay"} 10.0
+```
+
+If the count is not 10, restart once more and repeat only the ten-request loop.
 
 Exact timing varies slightly because real request handling adds overhead.
 
@@ -549,10 +625,42 @@ An average compresses the whole distribution into one number. Nine fast requests
 one very slow request may have the same average as ten medium requests, even though
 their user impact differs.
 
+### Required grouped weighted-average exercise
+
+A simple average gives every individual observation equal weight. When observations
+are summarized in groups, multiply each group value by its request count before
+dividing by the total request count.
+
+Suppose 5 requests take 100 ms each and 10 requests take 300 ms each. Before revealing
+the answer, calculate:
+
+1. the total latency contributed by each group
+2. the combined total latency
+3. the total request count
+4. the grouped weighted-average latency
+
+Do not use `(100 + 300) / 2`: that simple average treats the two groups as equal even
+though the second group contains twice as many requests.
+
+<details>
+<summary>Check your calculation</summary>
+
+```text
+first group  = 5 × 100 ms  = 500 ms
+second group = 10 × 300 ms = 3000 ms
+total latency = 3500 ms
+total requests = 5 + 10 = 15
+weighted average = 3500 / 15 ≈ 233.33 ms
+```
+
+</details>
+
 ## Percentiles and tail latency
 
-p50 is the estimated value at or below which 50% of observations fall. p95 covers 95%,
-and p99 covers 99%. p95 and p99 describe the slow tail more directly than an average.
+p50 is the estimated value at or below which 50% of observations fall. p80, p90, p95,
+and p99 mean that 80%, 90%, 95%, and 99% of observations respectively fall at or
+below the estimated value. A percentile does not mean that percentage of requests took
+exactly that value. p95 and p99 describe the slow tail more directly than an average.
 
 Classic histograms do not retain every individual duration. They retain cumulative
 bucket counts. When a target falls inside a bucket, estimate its position with linear
@@ -608,6 +716,26 @@ width = 0.50 - 0.25 = 0.25 seconds
 p80 ≈ 0.25 + 0.8 × 0.25 = 0.45 seconds
 ```
 
+Now exercise p90 with the same buckets before using the helper. The target count is
+`0.90 × 50 = 45`, so locate the first cumulative bucket at or above 45 and interpolate
+inside it.
+
+<details>
+<summary>Check your p90 calculation</summary>
+
+```text
+selected bucket = (0.50, 1.00]
+observations in bucket = 50 - 43 = 7
+position in bucket = 45 - 43 = 2
+fraction = 2 / 7
+width = 1.00 - 0.50 = 0.50 seconds
+p90 ≈ 0.50 + (2 / 7) × 0.50 ≈ 0.642857 seconds
+```
+
+This means an estimated 90% of observations are at or below about 0.643 seconds.
+
+</details>
+
 Now verify rather than replace your reasoning:
 
 ```bash
@@ -621,7 +749,7 @@ The helper prints every calculation step. It accepts numeric or `p`-prefixed val
 ```bash
 python tools/histogram_percentile.py \
   --buckets '0.10:12,0.25:28,0.50:43,1.00:50' \
-  --percentiles p50,p80,p95,p99
+  --percentiles p50,p80,p90,p95,p99
 ```
 
 ## Verify percentiles from live `/delay` metrics
@@ -633,14 +761,14 @@ curl -s http://localhost:8000/metrics/ \
   | python tools/histogram_percentile.py \
       --metric lab00_http_request_duration_seconds \
       --label endpoint=/delay \
-      --percentiles p50,p95,p99
+      --percentiles p50,p90,p95,p99
 ```
 
 The label filter matters because the histogram has separate series for `/health`,
 `/slow`, `/delay`, and other routes. If multiple series match, the helper asks you to
 choose one rather than silently combining them.
 
-Compare p50 with p95 and p99. A large gap indicates a long latency tail. Then inspect
+Compare p50 with p90, p95, and p99. A large gap indicates a long latency tail. Then inspect
 the raw buckets again and explain which slow requests created that gap.
 
 In later Prometheus and PromQL labs, you will use `histogram_quantile()` across stored
@@ -684,13 +812,20 @@ git diff -- application/main.py
 python scripts/lab_step.py list
 ```
 
-Confirm that you started from `lab-01-start` and applied earlier steps in number
+Confirm that you started from `lab-01-start-v2` and applied earlier steps in number
 order. Do not discard your file automatically; read the overlap.
 
 ### Metrics still show old label series
 
-The client library keeps series in process memory. Restart Uvicorn after changing label
-definitions, then generate new traffic.
+The client library keeps series in process memory. Follow
+[How to restart the app during this lab](#how-to-restart-the-app-during-this-lab) after
+changing label definitions, then generate new traffic.
+
+### The app is not reachable from terminal 2
+
+Confirm that terminal 1 still shows Uvicorn running on `http://127.0.0.1:8000`. If it
+does not, follow [How to restart the app during this lab](#how-to-restart-the-app-during-this-lab).
+Keep terminal 1 running while you retry the `curl` command in terminal 2.
 
 ### `/metrics` returns 307
 
@@ -734,7 +869,9 @@ Make sure you can:
 - reproduce and fix the negative active-jobs Gauge
 - subtract cumulative histogram buckets
 - calculate at least one percentile manually
-- use the helper to verify p50, p95, and p99
+- calculate a grouped weighted average before checking the answer
+- define and use p50, p80, p90, p95, and p99 as `at or below` estimates
+- use the helper to verify p50, p90, p95, and p99
 - explain Counter vs Gauge vs Histogram selection
 - defend every label as bounded and operationally useful
 

@@ -1,0 +1,25 @@
+diff --git a/application/main.py b/application/main.py
+--- a/application/main.py
++++ b/application/main.py
+@@ -1,7 +1,7 @@
+ import json
+ import time
+ 
+-from fastapi import FastAPI, HTTPException, Request
++from fastapi import FastAPI, HTTPException, Query, Request
+ from prometheus_client import Counter, Gauge, Histogram, make_asgi_app
+ 
+ from opentelemetry import trace
+@@ -148,6 +148,12 @@ def slow():
+     return {"message": "That was intentionally slow"}
+ 
+ 
++@app.get("/delay")
++def delay(ms: int = Query(..., ge=0, le=5000)):
++    time.sleep(ms / 1000)
++    return {"requested_delay_ms": ms}
++
++
+ @app.get("/error")
+ def error():
+     raise HTTPException(

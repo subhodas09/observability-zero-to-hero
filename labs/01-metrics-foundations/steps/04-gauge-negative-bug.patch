@@ -1,0 +1,51 @@
+diff --git a/application/main.py b/application/main.py
+--- a/application/main.py
++++ b/application/main.py
+@@ -2,7 +2,7 @@ import json
+ import time
+ 
+ from fastapi import FastAPI, HTTPException, Request
+-from prometheus_client import Counter, Histogram, make_asgi_app
++from prometheus_client import Counter, Gauge, Histogram, make_asgi_app
+ 
+ from opentelemetry import trace
+ from opentelemetry.sdk.resources import Resource
+@@ -66,6 +66,13 @@ USER_REQUESTS = Counter(
+     ["endpoint"],
+ )
+ 
++ACTIVE_JOBS = Gauge(
++    "lab01_active_jobs",
++    "Current number of active jobs in the gauge demonstration",
++)
++
++active_jobs = 0
++
+ 
+ # ---------------------------------------------------------
+ # Observability middleware
+@@ -173,6 +180,24 @@ def cardinality_demo(user_id: str):
+     }
+ 
+ 
++@app.get("/gauge/jobs/start")
++def start_demo_job():
++    global active_jobs
++
++    active_jobs += 1
++    ACTIVE_JOBS.set(active_jobs)
++    return {"message": "Demo job started"}
++
++
++@app.get("/gauge/jobs/finish")
++def finish_demo_job():
++    global active_jobs
++
++    active_jobs -= 1
++    ACTIVE_JOBS.set(active_jobs)
++    return {"message": "Demo job finished"}
++
++
+ # Prometheus-compatible metrics endpoint
+ metrics_app = make_asgi_app()
+ app.mount("/metrics", metrics_app)

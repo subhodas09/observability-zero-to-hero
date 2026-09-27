@@ -42,10 +42,17 @@ You will also learn the first mental model for using telemetry during troublesho
 
 ➡️ [Start Lab 00](labs/00-observability-fundamentals/README.md)
 
+### 🟡 Lab 01 — Metrics Foundations
+
+Learn how Counters, Gauges, Histograms, labels, cardinality, averages, and percentile
+interpolation work through controlled application experiments.
+
+➡️ [Continue to Lab 01](labs/01-metrics-foundations/README.md)
+
 ## Current progress
 
 - [x] Lab 00 — Observability Fundamentals
-- [ ] Lab 01 — Metrics Foundations
+- [ ] Lab 01 — Metrics Foundations (learner workflow prepared; implementation checkpoint pending)
 
 ## Technology
 
@@ -76,6 +83,19 @@ For Lab 00 you only need:
 - a terminal
 
 Later labs introduce additional dependencies only when needed.
+
+## Course checkpoints
+
+Each lab uses two immutable annotated tags with different purposes:
+
+- `lab-N-start` is the prepared environment for learning Lab N. It contains the
+  previous lab's application baseline plus the instructions, patches, helpers, and
+  tests needed to complete Lab N.
+- `lab-N-complete` is the reviewed reference implementation after Lab N is finished.
+
+Learners normally create their working branch from `lab-N-start`. Use
+`lab-N-complete` to inspect the finished state, compare work, recover, or jump ahead.
+The two tags must identify distinct course states when the lab changes the application.
 
 ## Supported environment
 

@@ -1,0 +1,21 @@
+diff --git a/application/main.py b/application/main.py
+--- a/application/main.py
++++ b/application/main.py
+@@ -141,6 +141,17 @@ def error():
+         detail="Intentional LAB 00 failure",
+     )
+ 
++
++@app.get("/variable-status")
++def variable_status(fail: bool = False):
++    if fail:
++        raise HTTPException(
++            status_code=500,
++            detail="Intentional variable failure",
++        )
++
++    return {"status": "success"}
++
+ 
+ # Prometheus-compatible metrics endpoint
+ metrics_app = make_asgi_app()

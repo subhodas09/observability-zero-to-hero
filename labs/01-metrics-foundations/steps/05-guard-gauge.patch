@@ -1,0 +1,13 @@
+diff --git a/application/main.py b/application/main.py
+--- a/application/main.py
++++ b/application/main.py
+@@ -193,6 +193,8 @@ def finish_demo_job():
+ def finish_demo_job():
+     global active_jobs
+ 
+-    active_jobs -= 1
++    if active_jobs > 0:
++        active_jobs -= 1
++
+     ACTIVE_JOBS.set(active_jobs)
+     return {"message": "Demo job finished"}

@@ -10,9 +10,10 @@ Phase 1 — Metrics Foundations
 
 ## Current lab
 
-Lab 00 — Observability Fundamentals
+Lab 01 — Metrics Foundations
 
-Status: ✅ Complete
+Status: 🟡 In progress — learner workflow prepared; the application implementation,
+publication, and immutable checkpoint tags are pending
 
 ## Completed
 
@@ -48,6 +49,14 @@ Status: ✅ Complete
 - Verified `/error`
 - Verified `/metrics/`
 - Verified repository navigation and required project files
+- Prepared `scripts/lab_step.py` plus six readable patches that support the learner loop:
+  read why → predict → show → apply → generate traffic → observe → explain
+- Prepared the standard-library `tools/histogram_percentile.py` verifier for direct bucket
+  exercises and raw Prometheus exposition text
+- Prepared deterministic percentile tests, including p75 ≈ 0.4167 seconds and p80 =
+  0.45 seconds
+- Prepared the public Lab 01 learner guide with exact commands, troubleshooting, cleanup,
+  metric-selection guidance, bounded-label rules, and the Lab 02 refactor plan
 
 ## Current architecture
 
@@ -79,7 +88,12 @@ Prometheus server, Grafana, Loki, Tempo, Kubernetes, and OpenTelemetry Collector
 
 - `README.md` — project introduction, prerequisites, and lab entry point
 - `labs/00-observability-fundamentals/README.md` — Lab 00 instructions, verification, troubleshooting, and cleanup
+- `labs/01-metrics-foundations/README.md` — Lab 01 concepts, experiments, exact commands, and checks
+- `labs/01-metrics-foundations/steps/` — readable, sequential code patches and their purpose
 - `application/main.py` — FastAPI endpoints, metrics, structured logs, and console tracing
+- `scripts/lab_step.py` — shows and safely applies one learner step patch
+- `tools/histogram_percentile.py` — explains classic-histogram percentile interpolation
+- `tests/test_histogram_percentile.py` — deterministic standard-library validation
 - `application/__init__.py` — application package marker
 - `requirements.txt` — pinned direct Python dependencies
 - `.gitignore` — excludes the virtual environment and generated local files
@@ -90,19 +104,23 @@ Prometheus server, Grafana, Loki, Tempo, Kubernetes, and OpenTelemetry Collector
 
 ## Unresolved work
 
-No unresolved Lab 00 blockers.
+- Review and publish the prepared `lab-01-start` course state, then create its
+  immutable annotated tag.
+- Create the later Lab 01 completion commit with the six-step result in
+  `application/main.py`. In that same commit, change `README.md` and this file from
+  their prepared-start wording to implementation-and-validation-complete
+  wording.
+- After the corresponding commits are reviewed and published, ensure the immutable
+  annotated tags point to these exact states: `lab-00-complete` at `ca0f15a`,
+  `lab-01-start` at the course-assets commit, and `lab-01-complete` at the later
+  application-completion commit. Do not create or move tags during draft authoring.
+- Perform a final fresh-clone public-repository check after the commit and tags exist.
 
 ## Next
 
-Lab 01 — Metrics Foundations
+Complete, review, and publish the Lab 01 implementation. Do not mark it complete until
+the reviewed completion commit, immutable checkpoints, and final fresh-clone check exist.
 
-Focus:
-
-- time series
-- counters
-- gauges
-- labels
-- dimensions
-- first principles of metric design
-
-Do not introduce the Prometheus server yet unless the lab explicitly reaches that prerequisite.
+For Lab 02, split the growing application into `application/instrumentation/` and
+`application/experiments/` before adding more experiments. Then begin Prometheus server
+fundamentals. Do not introduce Grafana, Kubernetes, or unrelated stack components yet.

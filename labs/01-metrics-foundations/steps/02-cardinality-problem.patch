@@ -1,0 +1,33 @@
+diff --git a/application/main.py b/application/main.py
+--- a/application/main.py
++++ b/application/main.py
+@@ -60,6 +60,12 @@ REQUEST_DURATION = Histogram(
+     ["endpoint"],
+ )
+ 
++USER_REQUESTS = Counter(
++    "lab01_user_requests_total",
++    "Requests to the cardinality demonstration endpoint",
++    ["user_id"],
++)
++
+ 
+ # ---------------------------------------------------------
+ # Observability middleware
+@@ -152,6 +158,16 @@ def variable_status(fail: bool = False):
+     return {"status": "success"}
+ 
+ 
++@app.get("/cardinality/{user_id}")
++def cardinality_demo(user_id: str):
++    USER_REQUESTS.labels(user_id=user_id).inc()
++
++    return {
++        "user_id": user_id,
++        "message": "Request recorded",
++    }
++
++
+ # Prometheus-compatible metrics endpoint
+ metrics_app = make_asgi_app()
+ app.mount("/metrics", metrics_app)

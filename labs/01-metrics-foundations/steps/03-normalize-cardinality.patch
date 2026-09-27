@@ -1,0 +1,47 @@
+diff --git a/application/main.py b/application/main.py
+--- a/application/main.py
++++ b/application/main.py
+@@ -63,7 +63,7 @@ REQUEST_DURATION = Histogram(
+ USER_REQUESTS = Counter(
+     "lab01_user_requests_total",
+     "Requests to the cardinality demonstration endpoint",
+-    ["user_id"],
++    ["endpoint"],
+ )
+ 
+ 
+@@ -80,6 +80,8 @@ async def observe_request(request: Request, call_next):
+         duration = time.perf_counter() - start_time
+ 
+         status = response.status_code
++        route = request.scope.get("route")
++        metric_endpoint = getattr(route, "path", None) or "__unmatched__"
+ 
+         span.set_attribute("http.response.status_code", status)
+         span.set_attribute("request.duration_seconds", duration)
+@@ -94,12 +96,12 @@ async def observe_request(request: Request, call_next):
+ 
+         REQUEST_COUNT.labels(
+             method=request.method,
+-            endpoint=request.url.path,
++            endpoint=metric_endpoint,
+             status=str(status),
+         ).inc()
+ 
+         REQUEST_DURATION.labels(
+-            endpoint=request.url.path
++            endpoint=metric_endpoint
+         ).observe(duration)
+ 
+         context = span.get_span_context()
+@@ -161,7 +163,9 @@ def variable_status(fail: bool = False):
+ 
+ @app.get("/cardinality/{user_id}")
+ def cardinality_demo(user_id: str):
+-    USER_REQUESTS.labels(user_id=user_id).inc()
++    USER_REQUESTS.labels(
++        endpoint="/cardinality/{user_id}",
++    ).inc()
+ 
+     return {
+         "user_id": user_id,
